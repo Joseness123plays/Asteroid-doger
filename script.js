@@ -372,5 +372,5 @@ function ResetGame() {
   }
   draw()
 }
-/*How do I make dynamic framerate*/
+alert("This is Beta Expect Bugs & Gliches")
 window.requestAnimationFrame(draw)

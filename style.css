@@ -1,0 +1,70 @@
+body{
+    margin: 0px;
+    background-color: black;
+    color:white;
+  }
+canvas{
+  position: fixed;
+  border:solid;
+  border-color:#c0c0c0;
+}
+#GameControls1{
+    position: fixed;
+    bottom:0;
+    width:30vw;
+    height:30vw;
+    border: outset;
+    border-color:grey;
+    background-color: lightgrey;
+  }
+  .up{
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    transform: rotate(-90deg);
+   left:35%; 
+  }
+  .down{
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    transform: rotate(90deg);
+    bottom:0;
+    left:35%;
+  }
+  .left{
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    transform: rotate(180deg);
+    top:35%;
+  }
+  .right{
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    top:35%;
+    right:0;
+  }
+  .gui{
+    position:absolute;
+    font-family: 'Press Start 2P';
+    z-index: 100;
+  }
+  #Stats1{
+    color:white;
+    font-family: 'Press Start 2P';
+    z-index: 999999;
+    position: fixed;
+    left:50vw;
+    top:0;
+  }
+  #Settingsbtn{
+    position: fixed;
+    right:0;
+    bottom:0;
+  }
+  @font-face {
+    font-family:'Press Start 2P';
+    src: url("PressStart2P-Regular.ttf") format("truetype");
+  }

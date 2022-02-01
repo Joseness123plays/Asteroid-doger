@@ -7,8 +7,11 @@ canvas{
   position: fixed;
   border:solid;
   border-color:#c0c0c0;
+  box-sizing: border-box;
 }
 #GameControls1{
+    border-width:1vw;
+    box-sizing: border-box;
     position: fixed;
     bottom:0;
     width:30vw;
@@ -56,14 +59,19 @@ canvas{
     font-family: 'Press Start 2P';
     z-index: 999999;
     position: fixed;
-    left:50vw;
-    top:0;
+    width:100%;
+    text-align: center;
+    top: 4px;
   }
   #Settingsbtn{
     position: fixed;
     right:0;
     bottom:0;
   }
+button{
+  width: 1%;
+  box-sizing: border-box;
+}
   @font-face {
     font-family:'Press Start 2P';
     src: url("PressStart2P-Regular.ttf") format("truetype");

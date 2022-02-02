@@ -301,7 +301,7 @@ class PowerUp{
       }
    }
 }
-class timer{
+/*class timer{
   constructor(){
     this.x=500
   }
@@ -314,12 +314,8 @@ let timer1 = {
       this.x=500
       console.log("1")
     }
-    ctx.beginPath()
-    ctx.rect(this.x,250,50,50)
-    ctx.fillStyle = "red"
-    ctx.fill()
   }
-}
+}*/
 let player1 = new player('green')
 let asteroids = []
 for (let i = 0; i < 6; i++) {

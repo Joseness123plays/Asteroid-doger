@@ -10,6 +10,7 @@ canvas{
   box-sizing: border-box;
 }
 #GameControls1{
+    opacity:0.5;
     border-width:1vw;
     box-sizing: border-box;
     position: fixed;
@@ -21,6 +22,8 @@ canvas{
     background-color: lightgrey;
   }
   .up{
+    opacity:inherit;
+    box-sizing: border-box;
     position: absolute;
     width: 30%;
     height: 30%;
@@ -28,6 +31,8 @@ canvas{
    left:35%; 
   }
   .down{
+    opacity:inherit;
+    box-sizing: border-box;
     position: absolute;
     width: 30%;
     height: 30%;
@@ -36,6 +41,8 @@ canvas{
     left:35%;
   }
   .left{
+    opacity:inherit;
+    box-sizing: border-box;
     position: absolute;
     width: 30%;
     height: 30%;
@@ -43,6 +50,8 @@ canvas{
     top:35%;
   }
   .right{
+    opacity:inherit;
+    box-sizing: border-box;
     position: absolute;
     width: 30%;
     height: 30%;
@@ -68,10 +77,6 @@ canvas{
     right:0;
     bottom:0;
   }
-button{
-  width: 1%;
-  box-sizing: border-box;
-}
   @font-face {
     font-family:'Press Start 2P';
     src: url("PressStart2P-Regular.ttf") format("truetype");

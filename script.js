@@ -197,10 +197,18 @@ class player {
     this.ShowHitBox = false
   }
   updatePos(deltatime){
-    /*if(this.x<0){
-      console.log(this.x)
+    if(this.x<0){
       this.x=this.x+(-this.x)
-    }*/
+    }
+    if(this.x+this.width>500){
+      this.x=this.x-((this.x+this.width)-500)
+    }
+    if(this.y<0){
+      this.y=this.y+(-this.y)
+    }
+    if(this.y+this.height>500){
+      this.y=this.y-((this.y+this.height)-500)
+    }
     if(!((this.x<=0&&this.Xdir<0)||(this.x>=500-this.width&&this.Xdir>0))){
       this.x += this.Xdir*deltatime
     }
@@ -255,13 +263,15 @@ class player {
 }
 class PowerUp{
   constructor(){
-    this.frame = 1
+    this.frameWidth = 160
+    this.frameHeight = 160
+    this.frameX = 0
+    this.frameY = 0
     this.width = 45                           
     this.height = 45
     this.x = 500+space2
     space2+=this.width*4
     this.y = Math.round(Math.random()*(500-this.width))
-    this.used = false
     this.img = document.createElement('img')
     this.img.src = 'Sheild.png'
   }
@@ -270,23 +280,44 @@ class PowerUp{
     if(this.x<= 0-this.width){
       this.x= 500+this.width
       this.y = Math.round(Math.random()*(500-this.width))
-      this.used=false
     }
     ctx.beginPath()
-    ctx.drawImage(this.img,0,0,160*this.frame,160*this.frame,this.x,this.y,this.width,this.height)
+    ctx.drawImage(this.img,this.frameX,this.frameY,this.frameWidth,this.frameHeight,this.x,this.y,this.width,this.height)
     this.collision()
   }
   collision(){
-    if(this.used==false){
       if(!(this.y + this.height < player1.y ||
         this.y > player1.y + player1.height ||
         this.x + this.width < player1.x ||
         this.x > player1.x + player1.width)){
+          this.frameX+=160
+          if(this.frameX>=480){
+            this.frameX = 0
+          }
           player1.sheidHp+=1
           player1.sheid = true
-          this.used=true
+          this.x= 500+this.width
+          this.y = Math.round(Math.random()*(500-this.width))
       }
+   }
+}
+class timer{
+  constructor(){
+    this.x=500
+  }
+}
+let timer1 = {
+  x:500,
+  updatePos(deltatime){
+    this.x-=0.3*deltatime
+    if(this.x<=0){
+      this.x=500
+      console.log("1")
     }
+    ctx.beginPath()
+    ctx.rect(this.x,250,50,50)
+    ctx.fillStyle = "red"
+    ctx.fill()
   }
 }
 let player1 = new player('green')
@@ -316,6 +347,7 @@ function drawing() {
   ctx.rect(0, 0, 500, 500);
   ctx.fillStyle = 'black';
   ctx.fill();
+  timer1.updatePos(timepassed)
   player1.updatePos(timepassed)
   for (let i = 0; i < asteroids.length; i++) {
     asteroids[i].updatePos(timepassed);

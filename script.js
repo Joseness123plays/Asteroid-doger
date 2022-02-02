@@ -343,7 +343,7 @@ function drawing() {
   ctx.rect(0, 0, 500, 500);
   ctx.fillStyle = 'black';
   ctx.fill();
-  timer1.updatePos(timepassed)
+  //timer1.updatePos(timepassed)
   player1.updatePos(timepassed)
   for (let i = 0; i < asteroids.length; i++) {
     asteroids[i].updatePos(timepassed);

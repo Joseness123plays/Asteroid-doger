@@ -530,12 +530,6 @@ class player {
       ctx.fillStyle = this.color
       ctx.fill()
     }
-    if(this.sheild){
-      ctx.beginPath()
-      ctx.arc(this.x,this.y,this.width,0,2*Math.PI)
-      ctx.fillStyle = 'blue'
-      ctx.fill()
-    }
   }
 }
 class PowerUp{

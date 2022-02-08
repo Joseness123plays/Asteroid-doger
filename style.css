@@ -2,6 +2,7 @@ body{
     margin: 0px;
     background-color: black;
     color:white;
+    font-family: 'Press Start 2P';
   }
 canvas{
   position: fixed;
@@ -66,7 +67,6 @@ canvas{
   #Stats1{
     color:white;
     font-family: 'Press Start 2P';
-    z-index: 999999;
     position: fixed;
     width:100%;
     text-align: center;
@@ -77,6 +77,23 @@ canvas{
     right:0;
     bottom:0;
   }
+#SettingsPanel{
+  position: fixed;
+  border:inset;
+  border-color:darkgray;
+  box-sizing: border-box;
+  left:1vw;
+  top:1vh;
+  width:98vw;
+  height:98vh;
+  background-color:grey;
+}
+button{
+  font-size: inherit;
+}
+div{
+  font-size: inherit;
+}
   @font-face {
     font-family:'Press Start 2P';
     src: url("PressStart2P-Regular.ttf") format("truetype");

@@ -1,37 +1,52 @@
 // Yes I now use quotes instead of double quotes lol
 document.onkeydown = (e) => {
-  switch (e.keyCode) {
-    case 37:
+  switch (e.key) {
+    case 'ArrowLeft':
       player1.Xdir = -0.2
       break;
-    case 38:
+    case 'ArrowUp':
       player1.Ydir = -0.2
       break;
-    case 39:
+    case 'ArrowRight':
       player1.Xdir = 0.2
       break;
-    case 40:
+    case 'ArrowDown':
       player1.Ydir = 0.2
+      break;
+    case ' ':
+      for(let i=0;i<bullets.length;i++){
+        if(bullets[i]==null){
+          bullets[i]=new Bullet(player1)
+          bullets[i].sound[0].play()
+          player1.bullets-=1
+          break;
+        }
+      }
       break;
   }
 }
 document.onkeyup = (e) => {
-  switch (e.keyCode) {
-    case 37:
+  switch (e.key) {
+    case 'ArrowLeft':
       player1.Xdir = 0
       break;
-    case 38:
+    case 'ArrowUp':
       player1.Ydir = 0
       break;
-    case 39:
+    case 'ArrowRight':
       player1.Xdir = 0
       break;
-    case 40:
+    case 'ArrowDown':
       player1.Ydir = 0
       break;
+    case 'Space':
+
+    break;
   }
 }
 let canvas = document.getElementById('Canvas')
+canvas.width = 500
+canvas.height = 500
 let ctx = canvas.getContext('2d')
 let GameOver = false
 let upbtn1 = document.getElementById('up1')
@@ -370,13 +385,25 @@ let MaxSize = 12
 let timeBefore = performance.now()
 let timepassed = performance.now() - timeBefore
 //Player, asteroids, PowerUps, & stuff
+function setHP(asteroid){
+  if(asteroid.hp<=25){
+    asteroid.hp = 1
+  }
+  else if(asteroid.hp<=50){
+    asteroid.hp = 2
+  }
+  else{
+    asteroid.hp = 3
+  }
+}
 class asteroid {
   constructor() {
-    this.height = Math.round(Math.random()*100)
+    this.height = Math.round(Math.random()*75)
     this.width = this.height
     space += this.width*2
     this.x = 500 + space
     this.y = Math.round(Math.random()*(500-this.width))
+    this.hp
     this.Twidth = (this.width * speed1) * 0.2
     this.Theight = this.height - 2
     this.TrailX = this.x + this.width
@@ -391,14 +418,7 @@ class asteroid {
     this.TrailX = this.x + this.width
     this.TrailY = this.y + 1
     if (this.x < 0-this.width-this.Twidth) {
-      this.height = Math.round(Math.random()*100)
-      this.width = this.height
-      this.x = 500+this.width
-      this.y = Math.round(Math.random()*(500-this.width))
-      this.Twidth = (this.width * speed1) * 0.2
-      this.Theight = this.height - 2
-      this.TrailX = this.x + this.width
-      this.TrailY = this.y + 1
+      this.resetPos()
     }
     ctx.beginPath()
     ctx.drawImage(this.img1,this.x, this.y, this.width, this.height)
@@ -406,6 +426,16 @@ class asteroid {
     ctx.rect(this.TrailX, this.TrailY, this.Twidth, this.Theight)
     ctx.fillStyle = 'yellow'
     ctx.fill()
+  }
+  resetPos(){
+    this.height = Math.round(Math.random()*100)
+    this.width = this.height
+    this.x = 500+this.width
+    this.y = Math.round(Math.random()*(500-this.width))
+    this.Twidth = (this.width * speed1) * 0.2
+    this.Theight = this.height - 2
+    this.TrailX = this.x + this.width
+    this.TrailY = this.y + 1
   }
 }
 class player {
@@ -418,16 +448,17 @@ class player {
     this.height = 45
     this.x = 0
     this.y = 0
-    this.hp = 20
+    this.hp = 1
     this.Xdir = 0
     this.Ydir = 0
+    this.bullets = 3
     this.color = color
     this.blinks = 0
     this.hide = false
     this.sound = [document.createElement('audio'),document.createElement('audio')]
       this.sound[0].src = 'explosion.wav'
       this.sound[1].src = 'explosionEnd.wav'
-    this.ShowHitBox = false
+    this.ShowHitBox = true
   }
   updatePos(deltatime){
     if(this.x<0){
@@ -448,11 +479,6 @@ class player {
     if(!((this.y<=0&&this.Ydir<0)||(this.y>=500-this.height&&this.Ydir>0))){
       this.y += this.Ydir*deltatime
     }
-    if (this.ShowHitBox) {
-      ctx.beginPath();
-      ctx.strokeStyle = 'white';
-      ctx.strokeRect(this.x, this.y, this.width, this.height);
-    }
     if(this.collision()&&this.sheild){
       if(Timers[1]==null){
         if(this.hp>0){
@@ -465,6 +491,7 @@ class player {
           Timers[1]=null
         })
       }
+      this.Blink()
     }
     else if(this.collision()){
       if(Timers[1]==null){
@@ -478,24 +505,7 @@ class player {
           Timers[1]=null
         })
       }
-      if(Timers[2]==null){
-        Timers[2]= new timer(0.1,()=>{
-          player1.blinks+=1
-          if(player1.blinks<=20){
-            if(player1.hide==false){
-              player1.hide=true
-            }
-            else{
-              player1.hide=false
-            }
-          }
-          else{
-            player1.hide=false
-            player1.blinks=0
-            Timers[2]=null
-          }
-        })
-      }
+      this.Blink()
     }
     if (this.hp <= 0) {
       GameOver = true
@@ -521,7 +531,37 @@ class player {
       }
     }
   }
+  Blink(){
+    if(Timers[2]==null){
+      Timers[2]= new timer(0.1,()=>{
+        player1.blinks+=1
+        if(player1.blinks<=20){
+          if(player1.hide==false){
+            player1.hide=true
+          }
+          else{
+            player1.hide=false
+          }
+        }
+        else{
+          player1.hide=false
+          player1.blinks=0
+          Timers[2]=null
+        }
+      })
+    }
+  }
   DrawPlayer(){
+    if(this.sheild){
+      ctx.beginPath()
+      ctx.arc(this.x+(this.width/2),this.y+(this.height/2),this.width/1.5,0,2*Math.PI)
+      ctx.fillStyle = '#002880'
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(this.x+(this.width/2),this.y+(this.height/2),this.width/3,0,2*Math.PI)
+      ctx.fillStyle = 'cyan'
+      ctx.fill()
+    }
     if(!this.hide){
       ctx.beginPath()
       ctx.moveTo(this.x + this.width, this.y + (this.height / 2));
@@ -529,6 +569,11 @@ class player {
       ctx.lineTo(this.x, this.y);
       ctx.fillStyle = this.color
       ctx.fill()
+    }
+    if (this.ShowHitBox) {
+      ctx.beginPath();
+      ctx.strokeStyle = 'white';
+      ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
   }
 }
@@ -661,14 +706,63 @@ class timer{
     }
   }
 }
+class Bullet{
+  constructor(owner){
+    this.x = owner.x+owner.width
+    this.y = owner.y+(owner.height/2)
+    this.endX = this.x+150
+    this.width = 5
+    this.height = 5
+    this.shot = true
+    this.owner = owner
+    this.sound = [document.createElement('audio'),document.createElement('audio')]
+    this.sound[0].src = 'laserShoot.wav'
+    this.sound[1].src = 'explosion.wav'
+  }
+  updatePos(deltatime){
+    if(this.shot){
+      if(this.x>=canvas.width||this.x>=this.endX){
+        this.shot=false
+        this.owner.bullets+=1
+      }
+      this.x+=0.2*deltatime
+      ctx.beginPath()
+      ctx.rect(this.x,this.y,this.width,this.height)
+      ctx.fillStyle = 'red'
+      ctx.fill()
+      this.collision()
+    }
+  }
+  collision(){
+    for (let i = 0; i < asteroids.length; i++) {
+      if(!(this.y + this.height < asteroids[i].y ||
+        this.y > asteroids[i].y + asteroids[i].height ||
+        this.x + this.width < asteroids[i].x ||
+        this.x > asteroids[i].x + asteroids[i].width)){
+          asteroids[i].resetPos()
+          this.sound[1].play()
+          this.shot = false
+          this.owner.bullets+=1
+          return true;
+      }
+    }
+  }
+}
 let player1 = new player('green')
 let asteroids = []
 for (let i = 0; i < 6; i++) {
   asteroids.push(new asteroid())
 }
+for (let i = 0; i < 6; i++) {
+  asteroids[i].hp = setHP(asteroids[i])
+}
 let PowerUps = []
 for (let i = 0; i < 4; i++) {
   PowerUps.push(new PowerUp())
+}
+let bullets = []
+for (let i = 0; i < player1.bullets; i++) {
+  bullets.push(null)
 }
 let Timers = [null,null,null]
 /*
@@ -686,7 +780,10 @@ Timers[0]=(new timer(5,()=>{
 }))
 ctx.font = '10px Arial'
 //Drawing each frame
-let draw = drawing
+let draw = null//setInterval(drawing,0)
+window.onload = ()=>{
+  draw = setInterval(drawing,0)
+}
 function drawing() {
   try{
   timepassed = performance.now() - timeBefore
@@ -706,34 +803,47 @@ function drawing() {
   for (let i = 0; i < PowerUps.length; i++) {
     PowerUps[i].updatePos(timepassed);
   }
+  for (let i = 0; i < bullets.length; i++) {
+    if(bullets[i]!=null){
+      if(bullets[i].shot==false){
+        bullets[i]=null
+      }
+      else{
+        bullets[i].updatePos(timepassed);
+      }
+    }
+  }
   for (let i = 0; i < Timers.length; i++) {
     if(Timers[i]!=null){
       Timers[i].updatePos(timepassed);
     }
   }
+  player1.DrawPlayer()
   if (GameOver == true) {
     DrawGameOver()
   }
   else{
-    window.requestAnimationFrame(draw)
+    //window.requestAnimationFrame(draw)
   }
   }
   catch(err){
     document.writeln(`An error has occured\nINFO:\n${err}`)
-    draw=null
+    clearInterval(draw)
   }
 }
 function UpdateText(){
   document.getElementById('Stats1').innerText = (`hp: ${player1.hp}`)
   document.getElementById('Stats1').appendChild(document.createElement('br'))
   document.getElementById('Stats1').appendChild(document.createTextNode(`Sheid hp: ${player1.sheildHp}`))
+  document.getElementById('Stats1').appendChild(document.createElement('br'))
+  document.getElementById('Stats1').appendChild(document.createTextNode(`Bullets: ${player1.bullets}`))
   document.getElementById('Stats1').appendChild(document.createElement('hr'))
   document.getElementById('Stats1').appendChild(document.createTextNode(`Speed: ${speed1}`))
   document.getElementById('Stats1').appendChild(document.createElement('br'))
   document.getElementById('Stats1').appendChild(document.createTextNode(`Fps: ${Math.floor(1000/timepassed)}`))
 }
 function DrawGameOver() {
-  draw = null
+  clearInterval(draw)
   let oof = document.createElement('audio')
   oof.src = 'explosionEnd.wav'
   oof.play()
@@ -768,7 +878,7 @@ function DrawGameOver() {
   document.body.appendChild(Reset)
 }
 function ResetGame() {
-  draw = drawing
+  draw = setInterval(drawing,0)
   space = 40
   space2 = 20
   speed1 = 1
@@ -788,6 +898,6 @@ function ResetGame() {
     speed1+=0.1
     speed1=parseFloat(speed1.toFixed(1))
   }))
-  draw()
+  setInterval(draw,0)
 }
-window.requestAnimationFrame(draw)
+//window.requestAnimationFrame(draw)

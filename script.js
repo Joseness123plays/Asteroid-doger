@@ -385,6 +385,7 @@ let MaxSize = 12
 let timeBefore = performance.now()
 let timepassed = performance.now() - timeBefore
 //Player, asteroids, PowerUps, & stuff
+//This is for something im adding in the future
 function setHP(asteroid){
   if(asteroid.hp<=25){
     asteroid.hp = 1
@@ -448,7 +449,7 @@ class player {
     this.height = 45
     this.x = 0
     this.y = 0
-    this.hp = 1
+    this.hp = 10
     this.Xdir = 0
     this.Ydir = 0
     this.bullets = 3

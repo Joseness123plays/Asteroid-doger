@@ -1,4 +1,4 @@
-// Yes I now use quotes instead of double quotes lol
+// I will organize this
 document.onkeydown = (e) => {
   switch (e.key) {
     case 'ArrowLeft':
